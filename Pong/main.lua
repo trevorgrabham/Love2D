@@ -34,6 +34,8 @@ function love.load()
     player1Score = 0
     player2Score = 0
 
+    winner = ''
+
     player1 = Paddle(10, 30, 5, 20)
     player2 = Paddle(VIRTUAL_WIDTH-10, VIRTUAL_HEIGHT-30, 5, 20)
 
@@ -44,7 +46,55 @@ function love.load()
 end
 
 function love.update(dt)
-    if gameState ~= 'paused' then 
+    if gameState ~= 'paused' and gameState ~= 'game over' then 
+
+        -- handle collisions
+        if ball:collides(player1) then 
+            ball.dx = -ball.dx * 1.1
+            -- move the ball just off of the player so that a collision isn't detected again
+            ball.x = player1.x + player1.width       
+            
+            -- handle the y velocity
+            if ball.dy > 0 then 
+                ball.dy = math.min(ball.dy + player1.dy/10, 150)
+            else
+                ball.dy = math.max(ball.dy + player1.dy/10, -150)
+            end
+        end
+
+        if ball:collides(player2) then 
+            ball.dx = -ball.dx * 1.1
+            -- move the ball just off of the player so that a collision isn't detected again
+            ball.x = player2.x - ball.width        
+            if ball.dy > 0 then 
+                ball.dy = math.min(ball.dy + player2.dy/10, 150)
+            else
+                ball.dy = math.max(ball.dy + player2.dy/10, -150)
+            end
+        end
+
+
+        -- handle the score
+        if ball.x + ball.width < player1.x then 
+            player2Score = player2Score + 1
+            if player2Score >= 10 then 
+                gameState = 'game over'
+                winner = 'Player\t2'
+            else
+                ball:reset()
+            end
+        end
+        if ball.x > player2.x + player2.width then 
+            player1Score = player1Score + 1
+            if player1Score >= 10 then 
+                gameState = 'game over'
+                winner = 'Player\t1'
+            else
+                ball:reset()
+            end
+        end
+
+
         -- player 1
         if love.keyboard.isDown('w') then 
             player1.dy = -PADDLE_SPEED
@@ -52,6 +102,8 @@ function love.update(dt)
         elseif love.keyboard.isDown('s') then 
             player1.dy = PADDLE_SPEED
             player1:update(dt)
+        else
+            player1.dy = 0
         end
 
         -- player 2
@@ -61,6 +113,8 @@ function love.update(dt)
         elseif love.keyboard.isDown('down') then 
             player2.dy = PADDLE_SPEED
             player2:update(dt)
+        else
+            player2.dy = 0
         end
 
         if gameState == 'play' then
@@ -77,7 +131,15 @@ function love.keypressed(key)
             gameState = 'play'
         elseif gameState == 'play' then
             gameState = 'paused'
+        elseif gameState == 'game over' then 
+            player1Score = 0
+            player2Score = 0
+            winner = ''
+            gameState = 'start'
+            ball:reset()
         end
+    elseif key == 'return' then 
+        ball:reset()
     end
 end
 
@@ -114,6 +176,12 @@ function love.draw()
     if gameState == 'paused' then
         love.graphics.setFont(promptFont)
         love.graphics.printf('Press\tspace\tto\tresume', 0, VIRTUAL_HEIGHT/2 - 7, VIRTUAL_WIDTH, 'center')
+    end
+
+    -- Game over screen
+    if gameState == 'game over' then 
+        love.graphics.setFont(promptFont)
+        love.graphics.printf(winner .. '\twon', 0, VIRTUAL_HEIGHT/2 -7, VIRTUAL_WIDTH, 'center')
     end
 
     -- Left Paddle
