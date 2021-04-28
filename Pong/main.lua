@@ -56,9 +56,9 @@ function love.update(dt)
             
             -- handle the y velocity
             if ball.dy > 0 then 
-                ball.dy = math.min(ball.dy + player1.dy/10, 150)
+                ball.dy = math.min(ball.dy + player1.dy/5, 150)
             else
-                ball.dy = math.max(ball.dy + player1.dy/10, -150)
+                ball.dy = math.max(ball.dy + player1.dy/5, -150)
             end
         end
 
@@ -67,9 +67,9 @@ function love.update(dt)
             -- move the ball just off of the player so that a collision isn't detected again
             ball.x = player2.x - ball.width        
             if ball.dy > 0 then 
-                ball.dy = math.min(ball.dy + player2.dy/10, 150)
+                ball.dy = math.min(ball.dy + player2.dy/5, 150)
             else
-                ball.dy = math.max(ball.dy + player2.dy/10, -150)
+                ball.dy = math.max(ball.dy + player2.dy/5, -150)
             end
         end
 
