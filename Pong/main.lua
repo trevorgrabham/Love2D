@@ -47,55 +47,57 @@ function love.load()
 end
 
 function love.update(dt)
-    if gameState ~= 'paused' and gameState ~= 'game over' and gameState ~= 'serve' then 
+    if gameState ~= 'paused' and gameState ~= 'game over' then 
 
-        -- handle collisions
-        if ball:collides(player1) then 
-            ball.dx = -ball.dx * 1.1
-            -- move the ball just off of the player so that a collision isn't detected again
-            ball.x = player1.x + player1.width       
-            
-            -- handle the y velocity
-            if ball.dy > 0 then 
-                ball.dy = math.min(ball.dy + player1.dy/5, 150)
-            else
-                ball.dy = math.max(ball.dy + player1.dy/5, -150)
+        if gameState ~= 'serve' then 
+            -- handle collisions
+            if ball:collides(player1) then 
+                ball.dx = -ball.dx * 1.1
+                -- move the ball just off of the player so that a collision isn't detected again
+                ball.x = player1.x + player1.width       
+                
+                -- handle the y velocity
+                if ball.dy > 0 then 
+                    ball.dy = math.min(ball.dy + player1.dy/5, 150)
+                else
+                    ball.dy = math.max(ball.dy + player1.dy/5, -150)
+                end
             end
-        end
 
-        if ball:collides(player2) then 
-            ball.dx = -ball.dx * 1.1
-            -- move the ball just off of the player so that a collision isn't detected again
-            ball.x = player2.x - ball.width        
-            if ball.dy > 0 then 
-                ball.dy = math.min(ball.dy + player2.dy/5, 150)
-            else
-                ball.dy = math.max(ball.dy + player2.dy/5, -150)
+            if ball:collides(player2) then 
+                ball.dx = -ball.dx * 1.1
+                -- move the ball just off of the player so that a collision isn't detected again
+                ball.x = player2.x - ball.width        
+                if ball.dy > 0 then 
+                    ball.dy = math.min(ball.dy + player2.dy/5, 150)
+                else
+                    ball.dy = math.max(ball.dy + player2.dy/5, -150)
+                end
             end
-        end
 
 
-        -- handle the score
-        if ball.x <= 0 then 
-            player2Score = player2Score + 1
-            justScored = 2
-            if player2Score >= 10 then 
-                gameState = 'game over'
-                winner = 'Player\t2'
-            else
-                ball:reset()
-                gameState = 'serve'
+            -- handle the score
+            if ball.x <= 0 then 
+                player2Score = player2Score + 1
+                justScored = 2
+                if player2Score >= 10 then 
+                    gameState = 'game over'
+                    winner = 'Player\t2'
+                else
+                    ball:reset()
+                    gameState = 'serve'
+                end
             end
-        end
-        if ball.x + ball.width >= VIRTUAL_WIDTH then 
-            player1Score = player1Score + 1
-            justScored = 1
-            if player1Score >= 10 then 
-                gameState = 'game over'
-                winner = 'Player\t1'
-            else
-                ball:reset()
-                gameState = 'serve'
+            if ball.x + ball.width >= VIRTUAL_WIDTH then 
+                player1Score = player1Score + 1
+                justScored = 1
+                if player1Score >= 10 then 
+                    gameState = 'game over'
+                    winner = 'Player\t1'
+                else
+                    ball:reset()
+                    gameState = 'serve'
+                end
             end
         end
 
@@ -145,8 +147,12 @@ function love.keypressed(key)
         elseif gameState == 'serve' then 
             if justScored == 1 then 
                 ball.dx = -100
+                ball.x = player2.x - ball.width
+                ball.y = player2.y + player2.height/2 - ball.height/2
             elseif justScored == 2 then 
                 ball.dx = 100
+                ball.x = player1.x + player1.width
+                ball.y = player1.y + player1.height/2 - ball.height/2
             end
             gameState = 'play'
         end
