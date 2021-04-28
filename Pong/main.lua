@@ -75,7 +75,7 @@ function love.update(dt)
 
 
         -- handle the score
-        if ball.x + ball.width < player1.x then 
+        if ball.x <= 0 then 
             player2Score = player2Score + 1
             if player2Score >= 10 then 
                 gameState = 'game over'
@@ -84,7 +84,7 @@ function love.update(dt)
                 ball:reset()
             end
         end
-        if ball.x > player2.x + player2.width then 
+        if ball.x + ball.width >= VIRTUAL_WIDTH then 
             player1Score = player1Score + 1
             if player1Score >= 10 then 
                 gameState = 'game over'

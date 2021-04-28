@@ -33,12 +33,18 @@ function Ball:update(dt)
     newY = self.y + self.dy*dt
     -- newX = self.x + self.dx*dt
     if newY < 0 or newY > VIRTUAL_HEIGHT-self.height then
+        if self.dy < 0 then 
+            ball.y = 0
+        else
+            ball.y = VIRTUAL_HEIGHT - self.height
+        end
         self.dy = -self.dy
+    else
+        self.y = self.y + self.dy * dt
     end
     -- if newX < 0 or newX > VIRTUAL_WIDTH-self.width then
     --     self.dx = -self.dx
     -- end
-    self.y = self.y + self.dy * dt
     self.x = self.x + self.dx * dt
 end
 
