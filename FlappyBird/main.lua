@@ -68,6 +68,9 @@ function love.update(dt)
     bird:update(dt)
 
     for i, pipePair in pairs(pipePairs) do 
+        if bird:collides(pipePair.pipes['top']) or bird:collides(pipePair.pipes['bottom']) then 
+            gameState = 'game over'
+        end
         pipePair:update(dt)
     end
 
@@ -113,6 +116,11 @@ function love.draw()
     -- FPS
     love.graphics.setFont(smallFont)
     love.graphics.printf(love.timer.getFPS() .. ' FPS', 4, 4, 45, 'left')
+
+    if gameState == 'game over' then 
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('game over', VIRTUAL_WIDTH-54, 4, 50, 'right')
+    end
 
     -- Bird
     bird:render()

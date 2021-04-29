@@ -9,6 +9,7 @@ function Pipe:init(isBottom, y)
     self.x = VIRTUAL_WIDTH
     self.y = y
     self.width = PIPE_IMAGE:getWidth()
+    self.isBottom = isBottom
     if isBottom then 
         self.yScale = 1
     else
