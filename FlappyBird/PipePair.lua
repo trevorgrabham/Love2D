@@ -16,6 +16,7 @@ function PipePair:init()
         ['bottom'] = Pipe(true, previousHeight)
     }
     self.remove = false
+    self.scored = false
 end
 
 function PipePair:render()
